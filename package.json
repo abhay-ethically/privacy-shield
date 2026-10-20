@@ -1,0 +1,38 @@
+{
+  "name": "screen-privacy-shield",
+  "version": "2.0.0",
+  "description": "Manifest V3 browser extension for real-time visual blur of confidential data, deliberate hover reveal, screen-share Present Mode, and zero-exposure audit logging. 100% offline.",
+  "scripts": {
+    "build": "node build.mjs",
+    "build:models": "node build.mjs --models-only",
+    "test": "node --test test/*.test.js",
+    "test:e2e": "node test/e2e_extension.mjs",
+    "serve": "npx serve . -p 8080"
+  },
+  "keywords": [
+    "privacy",
+    "anti-shoulder-surfing",
+    "dlp",
+    "pii-redaction",
+    "chrome-extension",
+    "manifest-v3",
+    "screen-sharing",
+    "tesseract-ocr",
+    "transformers-js"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "MIT",
+  "overrides": {
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10",
+    "jsdom": "^24.1.3",
+    "playwright-core": "^1.64.1"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
+    "pdfjs-dist": "^4.10.38",
+    "tesseract.js": "^5.1.1"
+  }
+}

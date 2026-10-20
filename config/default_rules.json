@@ -1,0 +1,224 @@
+{
+  "version": "2.0.0",
+  "settings": {
+    "enabled": true,
+    "revealDelayMs": 250,
+    "requireAltKey": false,
+    "blurIntensity": 10,
+    "enableOcr": false,
+    "enableNer": false,
+    "auditLoggingEnabled": true,
+    "remoteAuditEndpoint": "",
+    "allowedDomains": [],
+    "blockedDomains": [],
+    "maxOverlays": 300,
+    "pdfRedirect": true,
+    "allowlistedValueHashes": [],
+    "presentMode": {
+      "autoOnCapture": true,
+      "active": false,
+      "manualHold": false,
+      "opaque": true,
+      "watermarkEnabled": true,
+      "watermarkText": "",
+      "allowRevealInPresentMode": false
+    }
+  },
+  "categories": {
+    "CREDIT_CARD": {
+      "name": "Credit Card",
+      "enabled": true,
+      "badge": "💳 CARD",
+      "color": "#f43f5e",
+      "requireChecksum": true
+    },
+    "SSN": {
+      "name": "Social Security Number",
+      "enabled": true,
+      "badge": "🔒 SSN",
+      "color": "#ef4444",
+      "requireChecksum": false
+    },
+    "EMAIL": {
+      "name": "Email Address",
+      "enabled": true,
+      "badge": "✉️ EMAIL",
+      "color": "#3b82f6",
+      "requireChecksum": false
+    },
+    "PHONE": {
+      "name": "Phone Number",
+      "enabled": true,
+      "badge": "📞 PHONE",
+      "color": "#10b981",
+      "requireChecksum": false
+    },
+    "API_KEY": {
+      "name": "API Key / Secret Token",
+      "enabled": true,
+      "badge": "🔑 KEY",
+      "color": "#f59e0b",
+      "requireChecksum": false
+    },
+    "JWT": {
+      "name": "JSON Web Token",
+      "enabled": true,
+      "badge": "🛡️ JWT",
+      "color": "#8b5cf6",
+      "requireChecksum": false
+    },
+    "IBAN": {
+      "name": "Bank Account (IBAN)",
+      "enabled": true,
+      "badge": "🏦 IBAN",
+      "color": "#06b6d4",
+      "requireChecksum": true
+    },
+    "PRIVATE_KEY": {
+      "name": "Private Key Block",
+      "enabled": true,
+      "badge": "🚨 PRIV KEY",
+      "color": "#dc2626",
+      "requireChecksum": false
+    },
+    "CONNECTION_STRING": {
+      "name": "Connection String / Cred URL",
+      "enabled": true,
+      "badge": "🗄️ CONN",
+      "color": "#be185d",
+      "requireChecksum": false
+    },
+    "GENERIC_SECRET": {
+      "name": "Secret Assignment",
+      "enabled": true,
+      "badge": "🔐 SECRET",
+      "color": "#9333ea",
+      "requireChecksum": false
+    },
+    "AADHAAR": {
+      "name": "Aadhaar Number (Verhoeff)",
+      "enabled": true,
+      "badge": "🪪 AADHAAR",
+      "color": "#ea580c",
+      "requireChecksum": true
+    },
+    "PAN": {
+      "name": "PAN Card",
+      "enabled": true,
+      "badge": "🪪 PAN",
+      "color": "#d97706",
+      "requireChecksum": false
+    },
+    "UPI": {
+      "name": "UPI ID",
+      "enabled": true,
+      "badge": "💸 UPI",
+      "color": "#059669",
+      "requireChecksum": false
+    },
+    "IFSC": {
+      "name": "Bank IFSC Code",
+      "enabled": true,
+      "badge": "🏦 IFSC",
+      "color": "#0891b2",
+      "requireChecksum": false
+    },
+    "PASSPORT": {
+      "name": "Passport Number",
+      "enabled": true,
+      "badge": "🛂 PASSPORT",
+      "color": "#7c3aed",
+      "requireChecksum": false
+    },
+    "GSTIN": {
+      "name": "GSTIN (India)",
+      "enabled": true,
+      "badge": "🧾 GSTIN",
+      "color": "#c2410c",
+      "requireChecksum": true
+    },
+    "VEHICLE_REG": {
+      "name": "Vehicle Registration (India)",
+      "enabled": true,
+      "badge": "🚗 VEHICLE",
+      "color": "#0369a1",
+      "requireChecksum": false
+    },
+    "DRIVING_LICENSE": {
+      "name": "Driving Licence (India)",
+      "enabled": true,
+      "badge": "🪪 DL",
+      "color": "#9333ea",
+      "requireChecksum": false
+    },
+    "VOTER_ID": {
+      "name": "Voter ID / EPIC (India)",
+      "enabled": true,
+      "badge": "🗳️ VOTER ID",
+      "color": "#15803d",
+      "requireChecksum": false
+    },
+    "ROUTING": {
+      "name": "Bank Routing (ABA)",
+      "enabled": true,
+      "badge": "🏦 ROUTING",
+      "color": "#0d9488",
+      "requireChecksum": true
+    },
+    "ENTROPY": {
+      "name": "High-Entropy String (experimental)",
+      "enabled": false,
+      "badge": "⚡ ENTROPY",
+      "color": "#64748b",
+      "requireChecksum": false
+    },
+    "CUSTOM_SELECTOR": {
+      "name": "CSS Selector Rules",
+      "enabled": true,
+      "badge": "🎯 SELECTOR",
+      "color": "#ec4899",
+      "requireChecksum": false
+    },
+    "NER_ENTITY": {
+      "name": "Unstructured NER Entity",
+      "enabled": true,
+      "badge": "🧠 NER",
+      "color": "#a855f7",
+      "requireChecksum": false
+    },
+    "OCR_TEXT": {
+      "name": "OCR Detected Text",
+      "enabled": true,
+      "badge": "📷 OCR",
+      "color": "#14b8a6",
+      "requireChecksum": false
+    }
+  },
+  "selectorRules": [
+    {
+      "id": "rule_salary",
+      "selector": ".confidential-salary, [data-pii=\"salary\"]",
+      "label": "Salary Data",
+      "category": "CUSTOM_SELECTOR"
+    },
+    {
+      "id": "rule_medical",
+      "selector": ".patient-diagnosis, [data-pii=\"medical\"]",
+      "label": "Medical Record",
+      "category": "CUSTOM_SELECTOR"
+    },
+    {
+      "id": "rule_account",
+      "selector": "td.account-number, [data-pii=\"account\"]",
+      "label": "Internal Account",
+      "category": "CUSTOM_SELECTOR"
+    },
+    {
+      "id": "rule_pii_data",
+      "selector": "[data-pii]",
+      "label": "Confidential PII",
+      "category": "CUSTOM_SELECTOR"
+    }
+  ],
+  "customRegexRules": []
+}

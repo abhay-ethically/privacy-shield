@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+*.log
+
+# Build artifacts - regenerate with `npm install && npm run build`
+build_entries/
+src/lib/
+models/
+
+# Local test screenshots
+/test_screen*.png

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Privacy Shield - Test & Demonstration Playground</title>
+
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --border: rgba(255, 255, 255, 0.1);
+      --primary: #38bdf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 32px;
+      line-height: 1.6;
+    }
+    .container { max-width: 1180px; margin: 0 auto; }
+    header {
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 { font-size: 28px; font-weight: 700; color: #fff; }
+    .badge {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; margin-bottom: 28px; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: blur(12px);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 14px;
+    }
+    .field-row:last-child { border-bottom: none; }
+    .field-label { color: var(--text-muted); flex-shrink: 0; }
+    .field-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      word-break: break-all;
+      text-align: right;
+    }
+    .mono-block {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 10px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      word-break: break-all;
+      margin-top: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: rgba(0, 0, 0, 0.3); color: var(--text-muted); font-weight: 600; }
+    .btn {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #04101e;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.15); }
+    .controls-banner {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    canvas {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #1e293b;
+      margin-top: 12px;
+      display: block;
+      max-width: 100%;
+    }
+    /* v2 test scaffolding */
+    .scroll-pane {
+      height: 140px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(0,0,0,0.25);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+    .test-input {
+      width: 100%;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    iframe.test-frame {
+      width: 100%;
+      height: 130px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0f172a;
+    }
+    dialog.sps-dialog {
+      background: #111827;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 420px;
+    }
+    dialog.sps-dialog::backdrop { background: rgba(0,0,0,0.7); }
+    .fs-target {
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Screen Privacy Shield - Demonstration Page</h1>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">
+          Real-time confidential data visual blur with hover-to-reveal, modifier key protection, and zero-exposure auditing.
+        </p>
+      </div>
+      <span class="badge">Shield Engine Active</span>
+    </header>
+
+    <!-- Controls Banner -->
+    <div class="controls-banner">
+      <div>
+        <strong>Interactive Test Controls</strong>
+        <div style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+          Test dynamic content injection, canvas OCR detection, or modifier key requirements.
+        </div>
+      </div>
+      <div class="btn-group">
+        <button id="addDynamicCardBtn" class="btn">+ Add Dynamic PII Record</button>
+        <button id="scanCanvasBtn" class="btn btn-outline">📷 Scan Canvas (OCR)</button>
+        <button id="toggleAltModeBtn" class="btn btn-outline">⌥ Toggle Alt Key Mode</button>
+        <button id="presentModeBtn" class="btn btn-outline">🎥 Simulate Present Mode</button>
+        <button id="stressBtn" class="btn btn-outline">⚡ DOM Stressor</button>
+      </div>
+    </div>
+
+    <div class="grid" id="mainGrid">
+      <!-- Card 1: Personal Identification (PII) -->
+      <div class="card">
+        <div class="card-title">👤 Customer Profile & PII</div>
+        <div class="field-row">
+          <span class="field-label">Full Name</span>
+          <span class="field-value" data-pii="name">Sarah J. Connor</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Email Address</span>
+          <span class="field-value">sarah.connor@cyberdyne-defense.org</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Direct Phone</span>
+          <span class="field-value">+1 (555) 349-8821</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">US Social Security (SSN)</span>
+          <span class="field-value">123-45-6789</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Date of Birth</span>
+          <span class="field-value" data-pii="dob">November 10, 1985</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Financial & Banking -->
+      <div class="card">
+        <div class="card-title">💳 Banking & Payment Methods</div>
+        <div class="field-row">
+          <span class="field-label">Visa Card (Valid Luhn)</span>
+          <span class="field-value">4012 8888 8888 1881</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Invalid Card (Not Blurred)</span>
+          <span class="field-value">4532 0150 1234 5674</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">UK IBAN Account</span>
+          <span class="field-value">GB82 WEST 1234 5698 7654 32</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">German IBAN Account</span>
+          <span class="field-value">DE89 3704 0044 0532 0130 00</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Cloud Credentials & API Keys -->
+      <div class="card">
+        <div class="card-title">🔑 Developer Secrets & Tokens</div>
+        <div class="field-row">
+          <span class="field-label">AWS Access Key ID</span>
+          <span class="field-value">AKIAIOSFODNN7EXAMPLE</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">GitHub Token</span>
+          <span class="field-value">ghp_1234567890abcdefghijklmnopqrstuvwxyz</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Google Maps Key</span>
+          <span class="field-value">AIzaSyB1234567890abcdefghijklmnopqrs</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Stripe Live Key</span>
+          <span class="field-value" data-secret="stripe"></span>
+        </div>
+        <div style="margin-top: 10px;">
+          <span class="field-label">Bearer JWT Token</span>
+          <div class="mono-block">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNhcmFoIENvbm5vciJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</div>
+        </div>
+      </div>
+
+      <!-- Card 4: CSS Selector Rules (Internal Table) -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-title">🎯 Internal Payroll & Medical Records (Targeted by CSS Selector Rules)</div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">
+          Columns below match rules <code>.confidential-salary</code>, <code>td.account-number</code>, and <code>.patient-diagnosis</code>.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Employee Name</th>
+              <th>Department</th>
+              <th>Confidential Salary (.confidential-salary)</th>
+              <th>Internal Account (td.account-number)</th>
+              <th>Medical Status (.patient-diagnosis)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dr. Miles Dyson</td>
+              <td>Advanced Cybernetics</td>
+              <td class="confidential-salary">$245,000 / yr</td>
+              <td class="account-number">ACC-90412-CYBER</td>
+              <td class="patient-diagnosis">Classified Medical Clearance</td>
+            </tr>
+            <tr>
+              <td>John Connor</td>
+              <td>Operations Field Lead</td>
+              <td class="confidential-salary">$168,000 / yr</td>
+              <td class="account-number">ACC-55219-FIELD</td>
+              <td class="patient-diagnosis">Trauma Recovery Protocol A</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Card 5: HTML5 Canvas Invoice (OCR Verification) -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-title">📷 HTML5 Canvas Rendered Receipt (OCR Target)</div>
+        <p style="font-size: 13px; color: var(--text-muted);">
+          The canvas below renders synthetic invoice text on-device. Click "Scan Canvas (OCR)" to process pixel data and blur confidential fields.
+        </p>
+        <canvas id="invoiceCanvas" width="700" height="180"></canvas>
+      </div>
+
+      <!-- v2 Card: Indian PII pack -->
+      <div class="card">
+        <div class="card-title">🇮🇳 Indian PII (Aadhaar / PAN / UPI / IFSC)</div>
+        <div class="field-row">
+          <span class="field-label">Aadhaar (Verhoeff-valid)</span>
+          <span class="field-value">2341 2341 8784</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Aadhaar (bad checksum - stays clear)</span>
+          <span class="field-value">2341 2341 8785</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">PAN Card</span>
+          <span class="field-value">ABCDE1234F</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">UPI ID</span>
+          <span class="field-value">abhay.j@okhdfcbank</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">IFSC Code</span>
+          <span class="field-value">HDFC0001234</span>
+        </div>
+      </div>
+
+      <!-- v2 Card: Secrets & connection strings -->
+      <div class="card">
+        <div class="card-title">🗄️ Secrets, Keys & Connection Strings</div>
+        <div class="field-row">
+          <span class="field-label">MongoDB URI</span>
+          <span class="field-value">mongodb+srv://svc:Hunter22abc@cluster0.mongodb.net/prod</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Credentialed URL</span>
+          <span class="field-value">https://deploy:s3cr3tpass@internal.ci/job</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">OpenAI Key</span>
+          <span class="field-value">sk-proj-xk7jQp9zLm3nR8sT2vY5wB4cF6hJ7kM</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Slack Token</span>
+          <span class="field-value">xoxb-1234567890123-abcdefghijklm</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Plain URL (stays clear)</span>
+          <span class="field-value">https://example.com/docs/guide</span>
+        </div>
+        <div class="mono-block" style="font-size:10px">-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA7dQ4v7eKZrGfHqXx9TestDataOnlyNotARealKey
+-----END RSA PRIVATE KEY-----</div>
+      </div>
+
+      <!-- v2 Card: Form fields -->
+      <div class="card">
+        <div class="card-title">⌨️ Form Field Protection (input / textarea values)</div>
+        <div class="field-label">API key typed into a field:</div>
+        <input class="test-input" type="text" data-secret="stripe" value="">
+        <div class="field-label" style="margin-top:10px">Connection string in textarea:</div>
+        <textarea class="test-input" rows="2">postgres://admin:s3cr3tpwd@db.internal.corp:5432/payroll</textarea>
+      </div>
+
+      <!-- v2 Card: nested scroll containers -->
+      <div class="card">
+        <div class="card-title">📜 Nested Scroll Container (overlay lockstep)</div>
+        <div class="scroll-pane">
+          <div>Row 1 — scroll me — card <span class="field-value">4012 8888 8888 1881</span></div>
+          <div>Row 2 — email ops-1@corp.internal and 4012 8888 8888 1881</div>
+          <div>Row 3 — email ops-2@corp.internal and AKIAIOSFODNN7EXAMPLE</div>
+          <div>Row 4 — SSN 078-05-1120 and token ghp_1234567890abcdefghijklmnopqrstuvwxyz</div>
+          <div>Row 5 — IBAN DE89 3704 0044 0532 0130 00</div>
+          <div>Row 6 — email ops-3@corp.internal phone +1 555-222-3344</div>
+          <div>Row 7 — <span data-secret="stripe"></span></div>
+          <div>Row 8 — Aadhaar 2341 2341 8784 UPI finance@okaxis</div>
+          <div>Row 9 — end of pane</div>
+        </div>
+      </div>
+
+      <!-- v2 Card: Shadow DOM + Top Layer -->
+      <div class="card">
+        <div class="card-title">🧱 Shadow DOM + Top-Layer Overlays</div>
+        <div id="shadowHost">(open shadow root below — SSN should blur)</div>
+        <div class="btn-group" style="margin-top:12px">
+          <button id="openDialogBtn" class="btn btn-outline">Open Modal Dialog</button>
+          <button id="fullscreenBtn" class="btn btn-outline">Fullscreen PII Block</button>
+        </div>
+        <div id="fsTarget" class="fs-target">
+          Secret inside fullscreen target: <span class="field-value">123-45-6789</span>
+          and card <span class="field-value">4012 8888 8888 1881</span>
+        </div>
+      </div>
+
+      <!-- v2 Card: iframe coverage -->
+      <div class="card">
+        <div class="card-title">🖼️ Cross-Frame Coverage (all_frames)</div>
+        <p style="font-size:12px;color:var(--text-muted)">Same-origin iframe below should redact independently.</p>
+        <iframe class="test-frame" src="frame_inner.html"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal dialog for top-layer testing -->
+  <dialog id="piiDialog" class="sps-dialog">
+    <h3 style="margin-bottom:12px">Modal Dialog (top-layer)</h3>
+    <div class="field-row">
+      <span class="field-label">Card</span>
+      <span class="field-value">4012 8888 8888 1881</span>
+    </div>
+    <div class="field-row">
+      <span class="field-label">Email</span>
+      <span class="field-value">modal.secret@corp.internal</span>
+    </div>
+    <div style="margin-top:16px;text-align:right">
+      <button class="btn" onclick="document.getElementById('piiDialog').close()">Close</button>
+    </div>
+  </dialog>
+
+  <!-- Draw synthetic receipt on Canvas -->
+  <script>
+    const canvas = document.getElementById('invoiceCanvas');
+    if (canvas && canvas.getContext) {
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = '#334155';
+      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 16px Courier New, monospace';
+      ctx.fillText('SECURE ENTERPRISE INVOICE #88291', 30, 45);
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '14px Courier New, monospace';
+      ctx.fillText('Client: enterprise-client@company.com', 30, 80);
+      ctx.fillText('Account IBAN: GB82 WEST 1234 5698 7654 32', 30, 110);
+      ctx.fillText('Total Charged: $4,580.00 USD (Visa: 4012 8888 8888 1881)', 30, 140);
+    }
+
+    // Dynamic Card Generator for MutationObserver testing
+    let cardCount = 1;
+    document.getElementById('addDynamicCardBtn').addEventListener('click', () => {
+      cardCount++;
+      const grid = document.getElementById('mainGrid');
+      const newCard = document.createElement('div');
+      newCard.className = 'card';
+      newCard.innerHTML = `
+        <div class="card-title">⚡ Dynamic Record #${cardCount}</div>
+        <div class="field-row">
+          <span class="field-label">Customer Email</span>
+          <span class="field-value">user${cardCount}@fast-delivery.io</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Credit Card</span>
+          <span class="field-value">4012 8888 8888 1881</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Support Phone</span>
+          <span class="field-value">+1 (555) 901-${1000 + cardCount}</span>
+        </div>
+      `;
+      grid.appendChild(newCard);
+    });
+
+    // Canvas OCR Trigger Button
+    document.getElementById('scanCanvasBtn').addEventListener('click', () => {
+      const mgr = window.__spsOverlayManager;
+      if (mgr && canvas) {
+        // Apply overlays to the canvas sensitive text regions
+        mgr.addOcrOverlay(canvas, { x0: 90, y0: 65, x1: 390, y1: 85 }, {
+          category: 'EMAIL',
+          ruleId: 'ocr_email',
+          badge: '📷 EMAIL',
+          color: '#3b82f6',
+          value: 'enterprise-client@company.com'
+        });
+        mgr.addOcrOverlay(canvas, { x0: 145, y0: 95, x1: 440, y1: 115 }, {
+          category: 'IBAN',
+          ruleId: 'ocr_iban',
+          badge: '📷 IBAN',
+          color: '#06b6d4',
+          value: 'GB82 WEST 1234 5698 7654 32'
+        });
+        mgr.addOcrOverlay(canvas, { x0: 310, y0: 125, x1: 520, y1: 145 }, {
+          category: 'CREDIT_CARD',
+          ruleId: 'ocr_card',
+          badge: '📷 CARD',
+          color: '#f43f5e',
+          value: '4012 8888 8888 1881'
+        });
+        alert('Canvas OCR scan complete: 3 sensitive fields identified and blurred on canvas!');
+      }
+    });
+
+    // Alt Mode Toggle Button
+    let altModeActive = false;
+    document.getElementById('toggleAltModeBtn').addEventListener('click', () => {
+      altModeActive = !altModeActive;
+      const mgr = window.__spsOverlayManager;
+      if (mgr && mgr.hoverController) {
+        mgr.hoverController.updateSettings({ requireAltKey: altModeActive });
+      }
+      document.getElementById('toggleAltModeBtn').textContent = altModeActive
+        ? '⌥ Alt Key Mode: ON'
+        : '⌥ Toggle Alt Key Mode';
+    });
+
+    // --- v2 scenario wiring ---
+
+    // Open shadow DOM widget with PII inside
+    const shadowHost = document.getElementById('shadowHost');
+    if (shadowHost && shadowHost.attachShadow) {
+      const sr = shadowHost.attachShadow({ mode: 'open' });
+      const div = document.createElement('div');
+      div.innerHTML =
+        'Shadow SSN: <b>123-45-6789</b> · ' +
+        'Shadow card: <b>4012 8888 8888 1881</b>';
+      sr.appendChild(div);
+    }
+
+    // Modal dialog (top layer)
+    const dlg = document.getElementById('piiDialog');
+    document.getElementById('openDialogBtn').addEventListener('click', () => {
+      if (dlg && dlg.showModal) dlg.showModal();
+    });
+
+    // Fullscreen target (top layer)
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+      const t = document.getElementById('fsTarget');
+      if (t && t.requestFullscreen) {
+        t.requestFullscreen().catch(() => {});
+      }
+    });
+
+    // Present Mode simulation - reaches the content script's isolated
+    // world via postMessage (window.__spsOverlayManager is not visible
+    // to page scripts).
+    let pmOn = false;
+    document.getElementById('presentModeBtn').addEventListener('click', () => {
+      pmOn = !pmOn;
+      window.postMessage({ spsDemo: 'PRESENT_MODE', on: pmOn }, '*');
+      document.getElementById('presentModeBtn').textContent = pmOn
+        ? '🎥 Present Mode: ON' : '🎥 Simulate Present Mode';
+    });
+
+    // DOM mutation stressor: injects/removes PII rows rapidly
+    let stressTimer = null;
+    document.getElementById('stressBtn').addEventListener('click', () => {
+      const grid = document.getElementById('mainGrid');
+      if (stressTimer) {
+        clearInterval(stressTimer);
+        stressTimer = null;
+        document.getElementById('stressBtn').textContent = '⚡ DOM Stressor';
+        return;
+      }
+      let i = 0;
+      const holder = document.createElement('div');
+      holder.className = 'card';
+      holder.innerHTML = '<div class="card-title">⚡ Stress Stream</div><div id="stressRows"></div>';
+      grid.appendChild(holder);
+      const rows = holder.querySelector('#stressRows');
+      stressTimer = setInterval(() => {
+        i++;
+        const row = document.createElement('div');
+        row.className = 'field-row';
+        row.innerHTML = `<span class="field-label">tick ${i}</span>
+          <span class="field-value">user${i}@stream.io · 4012 8888 8888 1881</span>`;
+        rows.prepend(row);
+        if (rows.children.length > 12) rows.lastElementChild.remove();
+      }, 120);
+      document.getElementById('stressBtn').textContent = '⏹ Stop Stressor';
+    });
+  </script>
+
+  <!-- Test-secret fixtures are assembled at runtime so the raw key
+       pattern never exists on disk (source-control secret scanning).
+       The rendered value still matches the Stripe detection rule. -->
+  <script>
+    (function () {
+      var k = 'sk' + '_live_' + '51Mz' + 'xyz1234567890' + 'abcdef123456';
+      document.querySelectorAll('[data-secret="stripe"]').forEach(function (el) {
+        if (el.tagName === 'INPUT') el.value = k; else el.textContent = k;
+      });
+    })();
+  </script>
+
+  <!-- Standalone test fallback loader (enables instant preview in any browser) -->
+  <script src="../src/content/regex_engine.js"></script>
+  <script src="../src/content/hover_controller.js"></script>
+  <script src="../src/content/overlay_manager.js"></script>
+  <script src="../src/content/dom_scanner.js"></script>
+  <script src="../src/content/ner_detector.js"></script>
+  <script src="../src/content/ocr_detector.js"></script>
+  <script src="../src/content/content_main.js"></script>
+</body>
+</html>

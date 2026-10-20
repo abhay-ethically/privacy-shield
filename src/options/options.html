@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Privacy Shield - Admin Configuration & Audit Hub</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <img src="../../icons/shield_mark.png" alt="ScreenShield logo" width="34" height="34">
+        </div>
+        <div class="brand-text">
+          <h2>ScreenShield</h2>
+          <span class="version-tag">v2.0.0 · MV3 · Offline</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="general">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg></span>
+          <span>General &amp; Shield</span>
+        </button>
+        <button class="nav-item" data-tab="categories">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4L13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1" fill="currentColor" stroke="none"/></svg></span>
+          <span>PII Categories</span>
+        </button>
+        <button class="nav-item" data-tab="rules">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg></span>
+          <span>Custom Rules</span>
+        </button>
+        <button class="nav-item" data-tab="domains">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg></span>
+          <span>Domain Controls</span>
+        </button>
+        <button class="nav-item" data-tab="models">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></span>
+          <span>AI / OCR Modules</span>
+        </button>
+        <button class="nav-item" data-tab="audit">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M9 10h6M9 14h4"/></svg></span>
+          <span>Audit Log Viewer</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span class="status-label">Engine Active</span>
+        </div>
+        <button id="saveTopBtn" class="btn btn-primary btn-save">Save Settings</button>
+        <div class="sidebar-credit">made by <span class="credit-name">abhay_ethically</span></div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="content-header">
+        <div>
+          <h1 id="pageTitle">General & Redaction Settings</h1>
+          <p id="pageDescription" class="subtitle">Configure real-time blur overlays, reveal timings, and modifier key behaviors.</p>
+        </div>
+        <div class="header-actions">
+          <span id="saveStatus" class="save-indicator"></span>
+          <button id="saveSettingsBtn" class="btn btn-primary">Save Changes</button>
+        </div>
+      </header>
+
+      <div class="content-body">
+        <!-- TAB 1: General & Shield -->
+        <section id="tab-general" class="tab-pane active">
+          <!-- First-run welcome card (shown only on #welcome) -->
+          <div id="welcomeCard" class="card welcome-card" style="display:none">
+            <div class="welcome-hero">
+              <img src="../../icons/logo_full.jpg" alt="ScreenShield — Protect. Monitor. Secure." class="welcome-logo">
+            </div>
+            <div class="card-header row-between">
+              <div>
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.8v5.4c0 4.4-3 8.1-7 9.8-4-1.7-7-5.4-7-9.8V5.8L12 3z"/><path d="M8.5 12h7"/></svg> You're protected</h3>
+                <p>Screen Privacy Shield is active on every page. Three things worth knowing:</p>
+              </div>
+              <button id="welcomeDismissBtn" class="btn btn-secondary btn-sm">Got it</button>
+            </div>
+            <div class="card-body welcome-steps">
+              <div class="welcome-step">
+                <span class="welcome-num">1</span>
+                <div><strong>Alt+Shift+P</strong> toggles <em>Present Mode</em> — opaque redaction bars for screen sharing. It also auto-activates when a tab is being captured.</div>
+              </div>
+              <div class="welcome-step">
+                <span class="welcome-num">2</span>
+                <div><strong>Hover</strong> a masked value to reveal it (or <strong>Alt+Click</strong>). Set a reveal delay and require the Alt key below.</div>
+              </div>
+              <div class="welcome-step">
+                <span class="welcome-num">3</span>
+                <div>For <strong>local PDFs</strong>, enable "Allow access to file URLs" in <code>chrome://extensions</code> → Screen Privacy Shield → Details.</div>
+              </div>
+            </div>
+            <div class="welcome-credit">made by <span class="credit-name">abhay_ethically</span></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Core Redaction Controls</h3>
+              <p>Configure how sensitive data is hidden and deliberately revealed.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Enable Screen Privacy Shield</label>
+                  <div class="label-desc">Master switch to enable real-time detection and visual blurring.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_enabled" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group">
+                <div class="row-between">
+                  <label class="label-title" for="setting_revealDelay">Hover Reveal Delay (ms)</label>
+                  <span id="revealDelayValue" class="badge-value">250 ms</span>
+                </div>
+                <div class="label-desc">Delay before unblurring upon mouseenter to prevent accidental exposure during scrolling.</div>
+                <input type="range" id="setting_revealDelay" min="0" max="1200" step="50" value="250" class="range-slider">
+                <div class="range-ticks">
+                  <span>0 ms (Instant)</span>
+                  <span>250 ms (Balanced)</span>
+                  <span>600 ms (Strict)</span>
+                  <span>1200 ms</span>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Require Modifier Key (⌥ Option / Alt) to Reveal</label>
+                  <div class="label-desc">User must hold down the Alt/Option key while hovering to unblur the data. Essential for high-security environments.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_requireAltKey">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group">
+                <div class="row-between">
+                  <label class="label-title" for="setting_blurIntensity">Blur Intensity (px)</label>
+                  <span id="blurIntensityValue" class="badge-value">8 px</span>
+                </div>
+                <div class="label-desc">CSS frosted-glass backdrop blur strength applied to confidential elements.</div>
+                <input type="range" id="setting_blurIntensity" min="4" max="20" step="1" value="8" class="range-slider">
+              </div>
+            </div>
+          </div>
+
+          <!-- Present Mode / Screen Sharing -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="12" rx="2"/><path d="M8 21h8M12 17v4"/><rect x="6" y="8.5" width="5" height="2.2" rx="1" fill="currentColor" stroke="none"/><rect x="13" y="8.5" width="5" height="2.2" rx="1" fill="currentColor" stroke="none"/></svg> Present Mode — Screen Sharing Protection</h3>
+              <p>When active, all overlays switch to opaque redaction bars, hover-reveal is disabled, and an optional watermark covers the viewport. Hotkey: <code>Alt+Shift+P</code>.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Auto-Enable When Tab Is Being Shared</label>
+                  <div class="label-desc">Detects Chrome tab capture (Meet/Zoom/Teams "share this tab") and activates Present Mode automatically.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_pmAutoCapture" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Opaque Redaction Bars</label>
+                  <div class="label-desc">Replace blurred overlays with fully opaque ████ bars during Present Mode. Recommended for sharing.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_pmOpaque" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Allow Hover Reveal During Present Mode</label>
+                  <div class="label-desc">Permits the deliberate hover+Alt reveal while sharing. Off = hard lockout (safest).</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_pmAllowReveal">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Viewport Watermark</label>
+                  <div class="label-desc">Diagonal repeating "PROTECTED" watermark while presenting - deters photography and marks shared frames.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_pmWatermark" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group">
+                <label class="label-title" for="setting_pmWatermarkText">Watermark Text (optional)</label>
+                <div class="label-desc">Defaults to hostname + date. Use e.g. your email or session ID.</div>
+                <input type="text" id="setting_pmWatermarkText" placeholder="abhay@crait.studio" class="input-text">
+              </div>
+            </div>
+          </div>
+
+          <!-- Offline PDF Viewer -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg> Protected PDF Viewer</h3>
+              <p>Chrome's built-in PDF viewer cannot run extensions. Redirecting .pdf links to the bundled offline pdf.js viewer keeps documents protected.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Redirect PDFs to Protected Viewer</label>
+                  <div class="label-desc">Intercepts .pdf navigation into the bundled viewer. Append <code>?sps_native=1</code> to a PDF URL to bypass once.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_pdfRedirect" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg> Performance</h3>
+              <p>Boundaries that keep the scanner real-time on very large pages.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <div class="row-between">
+                  <label class="label-title" for="setting_maxOverlays">Max Active Overlays</label>
+                  <span class="badge-value" id="maxOverlaysValue">300</span>
+                </div>
+                <div class="label-desc">Overlay budget per page; excess matches collapse into a counter badge.</div>
+                <input type="range" id="setting_maxOverlays" min="50" max="1000" step="50" value="300" class="range-slider">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 2: PII Categories -->
+        <section id="tab-categories" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>Structured PII Detection Categories</h3>
+              <p>Toggle individual detection algorithms, checksum filters, and visual badges.</p>
+            </div>
+            <div class="card-body">
+              <div id="categoriesList" class="categories-grid">
+                <!-- Dynamically populated from config -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: Custom Rules -->
+        <section id="tab-rules" class="tab-pane">
+          <div class="card">
+            <div class="card-header row-between">
+              <div>
+                <h3>CSS Selector Blur Rules</h3>
+                <p>Always blur UI elements matching these CSS selectors (e.g. salary columns, medical fields).</p>
+              </div>
+              <button id="addSelectorBtn" class="btn btn-secondary btn-sm">+ Add Selector Rule</button>
+            </div>
+            <div class="card-body">
+              <div id="selectorRulesContainer" class="rules-list">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-header row-between">
+              <div>
+                <h3>Custom Regular Expression Rules</h3>
+                <p>Define custom corporate patterns (e.g. employee IDs, internal project codenames).</p>
+              </div>
+              <button id="addRegexBtn" class="btn btn-secondary btn-sm">+ Add Custom Regex</button>
+            </div>
+            <div class="card-body">
+              <div id="regexRulesContainer" class="rules-list">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-header">
+              <h3>Never-Blur Allowlist</h3>
+              <p>Values that should never be redacted (e.g. your own public email, test card numbers). Stored as non-reversible hashes - the raw value is never persisted.</p>
+            </div>
+            <div class="card-body">
+              <div class="allowlist-add-row">
+                <input type="text" id="allowlistInput" class="input-text" placeholder="Paste a value to never blur (e.g. 4111 1111 1111 1111)">
+                <button id="addAllowlistBtn" class="btn btn-secondary btn-sm">+ Allow</button>
+              </div>
+              <div id="allowlistContainer" class="rules-list" style="margin-top:12px">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: Domains -->
+        <section id="tab-domains" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>Domain Whitelist & Blacklist</h3>
+              <p>Control where Screen Privacy Shield is active. If Whitelist is populated, it runs ONLY on those domains.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="label-title">Allowed Domains (Whitelist)</label>
+                <div class="label-desc">One domain per line (e.g. <code>internal-crm.company.com</code>, <code>localhost</code>). Leave empty to monitor all pages.</div>
+                <textarea id="setting_allowedDomains" class="textarea-domains" placeholder="app.mycompany.com&#10;salesforce.com&#10;localhost"></textarea>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group">
+                <label class="label-title">Blocked Domains (Blacklist)</label>
+                <div class="label-desc">Shield is completely disabled on these domains (e.g. public news, streaming services).</div>
+                <textarea id="setting_blockedDomains" class="textarea-domains" placeholder="youtube.com&#10;wikipedia.org"></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 5: AI / OCR Models -->
+        <section id="tab-models" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>On-Device Unstructured NER (Named Entity Recognition)</h3>
+              <p>Locally detects person names, physical addresses, and confidential organizations with zero network requests.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Enable On-Device NER Model</label>
+                  <div class="label-desc">Uses local ONNX distilled model via Transformers.js. Highly confidential; nothing is sent to external APIs.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_enableNer">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="info-box mt-3">
+                <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span>
+                <div>
+                  <strong>Model Performance Note:</strong> NER runs in-memory on visible text. Results are hashed and cached per node to ensure smooth 60fps page interactions.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-header">
+              <h3>On-Device Image, Canvas & PDF OCR</h3>
+              <p>Extracts text from images and &lt;canvas&gt; elements (including PDF.js per-page canvases) to blur sensitive pixel data.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group row-between">
+                <div>
+                  <label class="label-title">Enable On-Device OCR Module (Tesseract.js)</label>
+                  <div class="label-desc">Scans same-origin canvases and images. Automatically catches and skips cross-origin tainted canvases safely.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="setting_enableOcr">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="info-box mt-3">
+                <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7l1.2-2.5h4.6L15.5 7"/></svg></span>
+                <div>
+                  <strong>Tainted Canvas Protection:</strong> Cross-origin images rendered on canvas without CORS headers will be gracefully skipped with an audit warning without crashing the host page.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 6: Audit Log Viewer -->
+        <section id="tab-audit" class="tab-pane">
+          <div class="card">
+            <div class="card-header row-between">
+              <div>
+                <h3>Zero-Exposure Audit Trail</h3>
+                <p>Detection and deliberate reveal logs. Raw sensitive strings are never stored or logged — only SHA-256 field hashes.</p>
+              </div>
+              <div class="button-group">
+                <button id="refreshLogsBtn" class="btn btn-secondary btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>Refresh</button>
+                <button id="exportCsvBtn" class="btn btn-secondary btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>CSV</button>
+                <button id="exportJsonBtn" class="btn btn-secondary btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>JSON</button>
+                <button id="exportReportBtn" class="btn btn-secondary btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Report</button>
+                <button id="clearLogsBtn" class="btn btn-danger btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6.5 7l1 12a2 2 0 0 0 2 1.8h5a2 2 0 0 0 2-1.8l1-12"/></svg>Clear</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- Audit Settings & Remote Webhook -->
+              <div class="audit-config-bar">
+                <div class="form-group row-between flex-1">
+                  <div>
+                    <label class="label-title">Audit Logging Enabled</label>
+                    <div class="label-desc">Track all detection & hover reveal events.</div>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="setting_auditLoggingEnabled" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div class="form-group flex-2 ml-4">
+                  <label class="label-title" for="setting_remoteAuditEndpoint">Centralized Audit Webhook (Optional POST Endpoint)</label>
+                  <input type="url" id="setting_remoteAuditEndpoint" placeholder="https://audit-gateway.company.corp/api/v1/telemetry" class="input-text">
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <!-- Filter & Search Bar -->
+              <div class="filter-bar">
+                <input type="text" id="logSearchInput" placeholder="Filter by URL, category, event type..." class="input-search">
+                <select id="logEventFilter" class="select-filter">
+                  <option value="ALL">All Event Types</option>
+                  <option value="DETECTION">Detection</option>
+                  <option value="REVEAL">Hover Reveal</option>
+                  <option value="REBLUR">Re-blur</option>
+                  <option value="PRESENT_MODE_ON">Present Mode ON</option>
+                  <option value="PRESENT_MODE_OFF">Present Mode OFF</option>
+                  <option value="CAPTURE_DETECTED">Capture Detected</option>
+                </select>
+                <span id="logCountBadge" class="log-count">0 events</span>
+              </div>
+
+              <!-- Log Table -->
+              <div class="table-container">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Event</th>
+                      <th>Category</th>
+                      <th>Rule ID</th>
+                      <th>SHA-256 Field Hash</th>
+                      <th>Target Page URL</th>
+                    </tr>
+                  </thead>
+                  <tbody id="auditTableBody">
+                    <tr>
+                      <td colspan="6" class="empty-state">No audit events recorded yet.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

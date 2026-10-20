@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protected PDF Viewer — ScreenShield</title>
+  <link rel="stylesheet" href="pdf.css">
+</head>
+<body>
+  <header id="toolbar">
+    <div class="brand">🛡️ ScreenShield PDF Viewer</div>
+    <div class="toolbar-controls">
+      <button id="zoomOut" title="Zoom out">−</button>
+      <span id="zoomLevel">120%</span>
+      <button id="zoomIn" title="Zoom in">+</button>
+      <span class="sep"></span>
+      <span id="pageInfo">– / –</span>
+      <span class="sep"></span>
+      <a id="openOriginal" href="#" target="_blank" rel="noopener">Open Original ↗</a>
+    </div>
+    <div id="docName" class="doc-name"></div>
+  </header>
+  <main id="viewerContainer">
+    <div id="loading">Loading document…</div>
+  </main>
+
+  <!-- Bundled pdf.js + ScreenShield detection modules -->
+  <script src="../lib/pdfjs.bundle.js"></script>
+  <script src="../content/regex_engine.js"></script>
+  <script src="../content/hover_controller.js"></script>
+  <script src="../content/overlay_manager.js"></script>
+  <script src="../content/dom_scanner.js"></script>
+  <script src="../content/ocr_detector.js"></script>
+  <script src="pdf_viewer.js"></script>
+</body>
+</html>

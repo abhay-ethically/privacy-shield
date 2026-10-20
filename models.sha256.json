@@ -1,0 +1,12 @@
+{
+  "sha256": {
+    "ner/onnx-community/distilbert-NER-ONNX/config.json": "f109facddb205dac712adf5877e4315fae62041bc0916fe808d92abdb594d1fe",
+    "ner/onnx-community/distilbert-NER-ONNX/onnx/model_quantized.onnx": "9419a876387ff2bbe5f21ab7429c7bef93eac86c50353390d4d8fca6e4a210d8",
+    "ner/onnx-community/distilbert-NER-ONNX/special_tokens_map.json": "5d5b662e421ea9fac075174bb0688ee0d9431699900b90662acd44b2a350503a",
+    "ner/onnx-community/distilbert-NER-ONNX/tokenizer.json": "cb26b43c98e8266ae3e99c2a583cf8315d73b33a17e6b20b4df7ff1f22392d34",
+    "ner/onnx-community/distilbert-NER-ONNX/tokenizer_config.json": "3c02f7e3bd40e2aca0235ca42256609fd0cd7d883226e17ddea667f1b1314665",
+    "ner/onnx-community/distilbert-NER-ONNX/vocab.txt": "eeaa9875b23b04b4c54ef759d03db9d1ba1554838f8fb26c5d96fa551df93d02",
+    "ocr/eng.traineddata.gz": "2117c3d97e7c433d366139ce1f8a13e629167f901bcad9cbc7f177583b1c5109",
+    "ocr/hin.traineddata.gz": "d82a6b1b097554e11d40f835bf3a7876636269f85b13b0e1e33cc23de1b5a4f8"
+  }
+}

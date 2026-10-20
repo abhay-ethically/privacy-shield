@@ -1,0 +1,100 @@
+{
+  "manifest_version": 3,
+  "name": "Screen Privacy Shield - Anti-Shoulder Surfing & PII Redaction",
+  "version": "2.0.0",
+  "description": "Real-time client-side confidential data detection, visual blur overlays, hover-to-reveal, screen-share Present Mode, offline OCR/NER, and zero-exposure audit logging.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Screen Privacy Shield"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "offscreen",
+    "tabCapture",
+    "webNavigation",
+    "alarms",
+    "contextMenus",
+    "notifications"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "src/background/service_worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "exclude_matches": ["*://*/*.pdf", "*://*/*.pdf?*", "*://*/*.pdf#*"],
+      "js": [
+        "src/content/regex_engine.js",
+        "src/content/hover_controller.js",
+        "src/content/overlay_manager.js",
+        "src/content/dom_scanner.js",
+        "src/content/ner_detector.js",
+        "src/content/ocr_detector.js",
+        "src/content/content_main.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true
+    }
+  ],
+  "commands": {
+    "toggle-present-mode": {
+      "suggested_key": {
+        "default": "Alt+Shift+P",
+        "mac": "Alt+Shift+P"
+      },
+      "description": "Toggle Present Mode (opaque redaction for screen sharing)"
+    },
+    "rescan-page": {
+      "suggested_key": {
+        "default": "Alt+Shift+R",
+        "mac": "Alt+Shift+R"
+      },
+      "description": "Force a full re-scan of the current page"
+    }
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self'; connect-src 'self' https: http: file: data: blob:"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "config/default_rules.json",
+        "src/content/overlay_styles.css",
+        "src/lib/*",
+        "src/lib/ort/*",
+        "src/lib/tesseract-core/*",
+        "src/lib/cmaps/*",
+        "models/*",
+        "models/ner/*",
+        "models/ner/onnx/*",
+        "models/ocr/*",
+        "src/pdf_viewer/*",
+        "icons/icon16.png",
+        "icons/icon48.png",
+        "icons/icon128.png"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

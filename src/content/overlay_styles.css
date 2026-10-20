@@ -1,0 +1,361 @@
+/* Screen Privacy Shield - Shadow DOM Overlay Styles */
+
+:host {
+  all: initial;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  pointer-events: none;
+  z-index: 2147483647;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #ffffff;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Base Redaction Overlay ("chip") - pure frosted glass: strong blur,
+   almost no tint, thin category-accented edge. The label pill inside
+   says WHAT is masked; the blur hides it.
+   NOTE: no transform transition - transform carries the position and must
+   track screen movement instantly (no trailing lag). Entrance animation
+   is opacity-only for the same reason. */
+.sps-blur-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--sps-accent-soft, rgba(148, 163, 184, 0.4));
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: __SPS_BLUR__ saturate(160%);
+  -webkit-backdrop-filter: __SPS_BLUR__ saturate(160%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.20),
+              inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  transition: opacity 0.16s ease,
+              border-color 0.15s ease,
+              background-color 0.15s ease,
+              box-shadow 0.15s ease;
+  animation: sps-overlay-in 0.18s ease-out;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Click pass-through: while hit-testing is disabled (click retargeting,
+   contextmenu resolution) the whole overlay layer is pointer-transparent.
+   The class lands on the light-DOM host, so shadow CSS must use :host(). */
+:host(.sps-hit-off),
+:host(.sps-hit-off) * {
+  pointer-events: none !important;
+}
+
+/* Leaf-masked chip: the underlying element (input/textarea/img) is
+   blurred directly via filter:blur() - no backdrop-filter needed here,
+   which makes field redaction essentially free. Chip is transparent;
+   only the accent edge + label show. */
+.sps-blur-overlay.sps-leaf-mask {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+@keyframes sps-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Top-layer hosted rects (dialog / fullscreen / popover) use viewport coords */
+.sps-blur-overlay.sps-fixed {
+  position: fixed;
+}
+
+/* Hovering active state before reveal delay triggers */
+.sps-blur-overlay:hover {
+  border-color: var(--sps-accent, rgba(226, 232, 240, 0.7));
+  background-color: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* Full reveal state */
+.sps-blur-overlay.sps-revealed {
+  opacity: 0 !important;
+  pointer-events: auto !important;
+}
+
+/* Micro Badge Indicator - compact dark glass pill, category dot */
+.sps-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px 2px 6px;
+  font-size: 8.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: 999px;
+  color: #f1f5f9;
+  background: rgba(3, 7, 18, 0.80);
+  border: 1px solid var(--sps-accent-soft, rgba(148, 163, 184, 0.45));
+  pointer-events: none;
+}
+
+.sps-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--sps-accent, #94a3b8);
+  flex-shrink: 0;
+}
+
+/* Compact mode when blurred span is small - dot only */
+.sps-compact .sps-badge-text {
+  display: none;
+}
+
+.sps-compact .sps-badge {
+  padding: 2px;
+  gap: 0;
+}
+
+/* Hover reveal progress shimmer bar */
+.sps-shimmer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  transition: width linear;
+  pointer-events: none;
+}
+
+.sps-blur-overlay.sps-arming .sps-shimmer {
+  width: 100%;
+}
+
+/* Modifier Key Warning Tooltip */
+.sps-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  padding: 4px 8px;
+  background: rgba(15, 23, 42, 0.95);
+  color: #f8fafc;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.sps-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
+}
+
+.sps-blur-overlay:hover .sps-tooltip.sps-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+/* ============================================================
+   PRESENT MODE - Opaque hard redaction for screen sharing
+   ============================================================ */
+:host(.sps-present) .sps-blur-overlay {
+  background: #0b1120;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 2px 10px rgba(0, 0, 0, 0.6);
+  cursor: default;
+}
+
+:host(.sps-present) .sps-blur-overlay::after {
+  content: '████████';
+  color: #334155;
+  font-size: 11px;
+  letter-spacing: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+:host(.sps-present) .sps-blur-overlay.sps-compact::after {
+  content: '██';
+  font-size: 9px;
+}
+
+/* Hide shimmer, tooltip and badge emoji details in present mode */
+:host(.sps-present) .sps-shimmer,
+:host(.sps-present) .sps-tooltip {
+  display: none !important;
+}
+
+:host(.sps-present) .sps-badge {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 7.5px;
+  padding: 1px 5px 1px 4px;
+  z-index: 2;
+}
+
+/* No reveal while locked (present mode unless allowReveal is set) */
+:host(.sps-locked) .sps-blur-overlay.sps-revealed,
+:host(.sps-locked) .sps-blur-overlay.sps-arming {
+  opacity: 1 !important;
+}
+
+/* ============================================================
+   Ribbon indicator - shown in the shared video feed
+   ============================================================ */
+.sps-ribbon {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: linear-gradient(135deg, #7f1d1d, #b91c1c);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 24px rgba(185, 28, 28, 0.55), 0 0 0 2px rgba(0,0,0,0.4);
+  pointer-events: none;
+  z-index: 2147483647;
+  animation: sps-ribbon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes sps-ribbon-pulse {
+  0%, 100% { box-shadow: 0 4px 24px rgba(185, 28, 28, 0.55), 0 0 0 2px rgba(0,0,0,0.4); }
+  50% { box-shadow: 0 4px 30px rgba(239, 68, 68, 0.8), 0 0 0 3px rgba(185,28,28,0.5); }
+}
+
+/* ============================================================
+   Watermark layer - photography deterrent during sharing
+   ============================================================ */
+.sps-watermark {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  pointer-events: none;
+  z-index: 2147483646;
+  opacity: 0.07;
+  background-repeat: repeat;
+}
+
+/* ============================================================
+   Interactive toasts - meeting suggestion + context notices
+   ============================================================ */
+.sps-suggest {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 480px;
+  padding: 10px 14px;
+  background: rgba(15, 23, 42, 0.97);
+  color: #f1f5f9;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+  pointer-events: auto;
+  z-index: 2147483647;
+  animation: sps-toast-in 0.25s ease-out;
+}
+
+.sps-suggest-btn {
+  border: none;
+  border-radius: 7px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sps-suggest-yes { background: #b91c1c; color: #fff; }
+.sps-suggest-yes:hover { background: #dc2626; }
+.sps-suggest-no { background: rgba(255,255,255,0.12); color: #e2e8f0; }
+.sps-suggest-no:hover { background: rgba(255,255,255,0.2); }
+
+.sps-notice {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: rgba(6, 78, 59, 0.95);
+  color: #d1fae5;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 2147483647;
+  animation: sps-toast-in 0.2s ease-out;
+}
+
+@keyframes sps-toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ============================================================
+   Overflow badge - overlay budget exhausted
+   ============================================================ */
+.sps-overflow-badge {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  display: none;
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 2147483647;
+}
